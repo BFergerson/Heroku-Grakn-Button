@@ -1,0 +1,80 @@
+import groovy.json.JsonSlurper
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.zip.ZipFile
+
+group 'heroku.button.grakn'
+version '1.0'
+
+apply plugin: 'application'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile(group: 'ai.grakn', name: 'grakn-bootup', version: '1.1.0') {
+        exclude module: 'javax.servlet-api'
+    }
+    compile(group: 'ai.grakn', name: 'janus-factory', version: '1.1.0') {
+        exclude module: 'javax.servlet-api'
+        exclude group: 'org.eclipse.jetty.orbit', module: 'javax.servlet'
+    }
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+}
+
+configurations {
+    compile.exclude module: 'grakn-module-sdk'
+}
+
+mainClassName = 'heroku.button.grakn.GraknButton'
+applicationDefaultJvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,address=9090,suspend=n"]
+
+task installLatestGrakn() {
+    def graknDistName = ""
+    def distZipUrl = ""
+    def latestRelease = new Scanner(new URL("https://api.github.com/repos/graknlabs/grakn/releases/latest")
+            .openStream(), "UTF-8").useDelimiter("\\A").next()
+    def parsedJson = new JsonSlurper().parseText(latestRelease)
+    for (def asset : parsedJson.assets) {
+        def name = asset.name as String
+        def downloadUrl = asset.browser_download_url as String
+        if (downloadUrl.endsWith(".zip")) {
+            graknDistName = name.replace(".zip", "")
+            distZipUrl = downloadUrl
+        }
+    }
+
+    def graknHomeLocation = "./"
+    def target = Paths.get(graknHomeLocation + graknDistName + '.zip')
+    def file = target.toFile().newOutputStream()
+    file << new URL(distZipUrl).openStream()
+    file.close()
+
+    def zipFile = new ZipFile(graknHomeLocation + graknDistName + '.zip')
+    zipFile.entries().each { zipEntry ->
+        def path = Paths.get(graknHomeLocation + zipEntry.name)
+        if (zipEntry.directory) {
+            Files.createDirectories(path)
+        } else {
+            def parentDir = path.getParent()
+            if (!Files.exists(parentDir)) {
+                Files.createDirectories(parentDir)
+            }
+            Files.copy(zipFile.getInputStream(zipEntry), path)
+        }
+    }
+
+    Files.move(Paths.get(graknHomeLocation + graknDistName), Paths.get(graknHomeLocation + "/grakn"))
+    Files.delete(target)
+
+    Process p = Runtime.getRuntime().exec("chmod -R 775 " + graknHomeLocation + "grakn")
+    p.waitFor()
+}
+
+task stage {
+    dependsOn "installDist", "installLatestGrakn"
+}
+installLatestGrakn.mustRunAfter installDist

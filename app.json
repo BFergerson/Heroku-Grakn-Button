@@ -1,0 +1,22 @@
+{
+  "name": "Heroku Grakn Button",
+  "description": "Deploy Grakn database to Heroku with a button",
+  "repository": "https://github.com/BFergerson/Heroku-Grakn-Button",
+  "logo": "https://grakn.ai/assets/svg/bot.svg",
+  "keywords": ["grakn"],
+  "env": {
+    "storage_hostname": {
+      "description": "Cassandra Hosts",
+      "required": false
+    },
+    "storage_username": {
+      "description": "Cassandra Username",
+      "value": "",
+      "required": false
+    },
+    "storage_password": {
+      "description": "Cassandra Password",
+      "required": false
+    }
+  }
+}
