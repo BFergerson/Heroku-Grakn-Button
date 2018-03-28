@@ -30,7 +30,6 @@ configurations {
 }
 
 mainClassName = 'heroku.button.grakn.GraknButton'
-applicationDefaultJvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,address=9090,suspend=n"]
 
 task installLatestGrakn() {
     def graknDistName = ""
