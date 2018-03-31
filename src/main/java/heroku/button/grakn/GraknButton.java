@@ -31,37 +31,11 @@ public class GraknButton {
             }
         }
 
-        new Thread(() -> {
-            while (true) {
-                try {
-                    File glog = new File("/app/grakn/logs/grakn.log");
-                    if (glog.exists()) {
-                        Tailer tailer = Tailer.create(glog, new MyListener(), 500);
-                        tailer.run();
-
-                        while (true) {
-                            Thread.sleep(500);
-                        }
-                    }
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
         GraknSystemProperty.CURRENT_DIRECTORY.set(graknHomeLocation + "grakn/");
         GraknSystemProperty.CONFIGURATION_FILE.set(graknPropertiesLocation);
         GraknSystemProperty.GRAKN_PID_FILE.set("/tmp/grakn.pid");
         GraknBootup.main(new String[]{"server", "start", "queue"});
         GraknBootup.main(new String[]{"server", "start", "grakn"});
-    }
-
-    private static class MyListener extends TailerListenerAdapter {
-        @Override
-        public void handle(String line) {
-            System.out.println(line);
-        }
     }
 
 }
