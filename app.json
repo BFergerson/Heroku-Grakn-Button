@@ -5,16 +5,20 @@
   "logo": "https://grakn.ai/assets/svg/bot.svg",
   "keywords": ["grakn"],
   "env": {
-    "storage_hostname": {
+    "IC_CONTACT_POINTS": {
       "description": "Cassandra Hosts",
       "required": false
     },
-    "storage_username": {
+    "IC_PORT": {
+      "description": "Cassandra Port",
+      "required": false
+    },
+    "IC_USER": {
       "description": "Cassandra Username",
       "value": "",
       "required": false
     },
-    "storage_password": {
+    "IC_PASSWORD": {
       "description": "Cassandra Password",
       "required": false
     }
