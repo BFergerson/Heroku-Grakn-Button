@@ -21,7 +21,7 @@ public class GraknButton {
             prop.load(input);
 
             try (FileOutputStream out = new FileOutputStream(graknPropertiesLocation)) {
-                prop.setProperty("log.level", "TRACE");
+                prop.setProperty("log.level", "INFO");
 
                 prop.setProperty("server.port", args[0]);
                 prop.setProperty("storage.hostname", args[1]);
