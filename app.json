@@ -9,10 +9,6 @@
       "description": "Cassandra Hosts",
       "required": false
     },
-    "IC_PORT": {
-      "description": "Cassandra Port",
-      "required": false
-    },
     "IC_USER": {
       "description": "Cassandra Username",
       "value": "",

@@ -23,10 +23,10 @@ public class GraknButton {
             try (FileOutputStream out = new FileOutputStream(graknPropertiesLocation)) {
                 //prop.setProperty("log.level", "TRACE");
 
-                prop.setProperty("IC_PORT", args[0]);
-                prop.setProperty("IC_CONTACT_POINTS", args[1]);
-                prop.setProperty("IC_USER", args[2]);
-                prop.setProperty("IC_PASSWORD", args[3]);
+                prop.setProperty("server.port", args[0]);
+                prop.setProperty("storage.hostname", args[1]);
+                prop.setProperty("storage.username", args[2]);
+                prop.setProperty("storage.password", args[3]);
                 prop.store(out, null);
             }
         }
